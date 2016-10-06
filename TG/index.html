@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset="UTF-8"/> 
+    <title>TG</title>
+    <link rel="shortcut icon" href="http://dl.dropbox.com/u/69843/dropbox-index/icons/favicon.ico"/>
+    
+    <style>
+        body { font-family: Verdana, sans-serif; font-size: 12px;}
+        a { text-decoration: none; color: #00A; }
+        a:hover { text-decoration: underline; }
+        #dropbox-index-header { padding: 0; margin: 0.5em auto 0.5em 1em; }
+        table#dropbox-index-list { text-align: center; margin: 0 auto 0 1.5em; border-collapse: collapse; }
+        #dropbox-index-list thead { border-bottom: 1px solid #555; }
+        #dropbox-index-list th:hover { cursor: pointer; cursor: hand; background-color: #EEE; }
+        #direction { border: 0; vertical-align: bottom; margin: 0 0.5em;}
+        #dropbox-index-list tbody { border-bottom: 1px solid #555;}
+        #dropbox-index-list tr, th { line-height: 1.7em; min-height: 25px; }
+        #dropbox-index-list tbody tr:hover { background-color: #EEE; }
+        .name { text-align: left; width: 35em; }
+        .name a, thead .name { padding-left: 22px; }
+        .name a { display: block; }
+        .size { text-align: right; width: 7em; padding-right: 1em;}
+        .date { text-align: right; width: 15em; padding-right: 1em;}
+        #dropbox-index-dir-info { margin: 1em auto 0.5em 2em; }
+        #dropbox-index-footer { margin: 1em auto 0.5em 2em; font-size: smaller;}
+        /* Icons */
+        .dir, .back, .file { background-repeat: no-repeat; background-position: 2px 4px;}
+        .back { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/back.png'); }
+        .dir { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/folder.png'); }
+        .file { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/file.png'); }
+        .image { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/image.png'); }
+        .video { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/video.png'); }
+        .music { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/music.png'); }
+        .archive { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/archive.png'); }
+        .package { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/package.png'); }
+        .pdf { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/pdf.png'); }
+        .txt { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/txt.png'); }
+        .markup { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/markup.png'); }
+        .code { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/code.png'); }
+        .font { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/font.png'); }
+        .document { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/document.png'); }
+        .spreadsheet { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/spreadsheet.png'); }
+        .presentation { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/presentation.png'); }
+        .application { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/application.png'); }
+        .plugin { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/plugin.png'); }
+        .iso { background-image: url('http://dl.dropbox.com/u/69843/dropbox-index/icons/iso.png'); }
+    </style>
+    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script>
+    function sort() {
+        column = $(this).attr("class").split(' ')[0];
+        $("#direction").remove();
+        if ($(this).hasClass("desc")) {
+            $("#dropbox-index-list thead tr th").each(function(i) { $(this).removeClass("asc").removeClass("desc") });
+            $(this).addClass("asc");
+            reverse = -1;
+        } else {
+            $("#dropbox-index-list thead tr th").each(function(i) { $(this).removeClass("asc").removeClass("desc") });
+            $(this).addClass("desc");
+            reverse = 1;
+        }
+        if (column == "name") {
+            $(this).append('<img src="http://dl.dropbox.com/u/69843/dropbox-index/icons/'+((reverse == 1) ? 'desc' : 'asc')+'.png" id="direction" />');
+        } else {
+            $(this).prepend('<img src="http://dl.dropbox.com/u/69843/dropbox-index/icons/'+((reverse == 1) ? 'desc' : 'asc')+'.png" id="direction" />');
+        }
+        rows = $("#dropbox-index-list tbody tr").detach()
+        rows.sort(function(a, b) {
+            result = $(a).data('type') - $(b).data('type')
+            if (result != 0) { return result }
+            
+            return (($(a).data(column) < $(b).data(column)) - ($(a).data(column) > $(b).data(column))) * reverse
+            
+        });
+        $("#dropbox-index-list tbody").append(rows);
+    }
+    
+    function prepare() {
+        $("#dropbox-index-list tbody tr").each(function(i) {
+            if ($(this).children(".name").hasClass("back")) {
+                $(this).data('type', 1);
+            } else if ($(this).children(".name").hasClass("dir")) {
+                $(this).data('type', 2);
+            } else {
+                $(this).data('type', 3);
+            }
+            $(this).data('name', $(this).children(".name").text().toLowerCase());
+            $(this).data('size', parseInt($(this).children(".size").attr("sort")));
+            $(this).data('date', parseInt($(this).children(".date").attr("sort")));
+        });
+        
+        $("#dropbox-index-list thead tr th").each(function(i) {
+            $(this).bind('click', sort);
+        });
+    }
+
+    $(document).ready(function(){
+        prepare();
+    });
+</script>
+</head>
+<body>
+<h1 id="dropbox-index-header">TG</h1>
+<table id="dropbox-index-list">
+    <thead>
+        <tr>
+            <th class="name">Name</th><th class="size">Size</th><th class="date">Last Modified</th>
+        </tr>
+    </thead>
+    <tbody>
+    
+<tr><td class="name back"><a href="../index.html">..</a></td><td class="size">&nbsp;</td><td class="date">&nbsp;</td></tr><tr>
+<tr><td class="name file pdf"><a href="Material.pdf">Material.pdf</a></td><td class="size" sort="494517">482.9 KB</td><td class="date" sort="1410132620.0">2014-09-07&nbsp;20:30:20</td></tr>
+<tr><td class="name file pdf"><a href="Isomorfismo.pdf">Isomorfismo.pdf</a></td><td class="size" sort="78819">77.0 KB</td><td class="date" sort="1410132618.0">2014-09-07&nbsp;20:30:18</td></tr>
+<tr><td class="name file pdf"><a href="Exercicios.pdf">Exercícios 1 Bimestre</a></td><td class="size" sort="150722">147.2 KB</td><td class="date" sort="1410132620.0">2014-09-07&nbsp;20:30:20</td></tr>
+<tr><td class="name file pdf"><a href="Pratica_Grafos.pdf">Prática de Grafos </a></td><td class="size" sort="245683">239.9 KB</td><td class="date" sort="1410132618.0">2014-09-07&nbsp;20:30:18</td></tr>
+<tr><td class="name file pdf"><a href="CM1.pdf">Caminho Mínimo </a></td><td class="size" sort="99090">96.8 KB</td><td class="date" sort="1410132622.0">2014-09-07&nbsp;20:30:22</td></tr>
+<tr><td class="name file pdf"><a href="CM0.pdf">Caminho Mínimo: Dijkstra </a></td><td class="size" sort="99090">96.8 KB</td><td class="date" sort="1410132622.0">2014-09-07&nbsp;20:30:22</td></tr>
+<tr><td class="name file pdf"><a href="CM.pdf">Caminho Mínimo: Floyd </a></td><td class="size" sort="603518">589.4 KB</td><td class="date" sort="1410132622.0">2014-09-07&nbsp;20:30:22</td></tr>
+<tr><td class="name file pdf"><a href="AGM.pdf">Árvore Geradora Mínima </a></td><td class="size" sort="248869">243.0 KB</td><td class="date" sort="1410132622.0">2014-09-07&nbsp;20:30:22</td></tr>
+<tr><td class="name file pdf"><a href="AGM1.pdf">Árvore Geradora Mínima </a></td><td class="size" sort="23355">22.8 KB</td><td class="date" sort="1410132622.0">2014-09-07&nbsp;20:30:22</td></tr>
+<tr><td class="name file pdf"><a href="Busca.pdf">Busca em Grafos </a></td><td class="size" sort="42507">41.5 KB</td><td class="date" sort="1410132622.0">2014-09-07&nbsp;20:30:22</td></tr>
+<tr><td class="name file pdf"><a href="Exercicios_Floyd_Prim_Kruskal.pdf">Exercícios: Floyd, Prim e Kruskal </a></td><td class="size" sort="149148">145.7 KB</td><td class="date" sort="1410132620.0">2014-09-07&nbsp;20:30:20</td></tr>
+<tr><td class="name file pdf"><a href="ExerciciosCM_AGM.pdf">Exercícios: CM e AGM </a></td><td class="size" sort="113213">110.6 KB</td><td class="date" sort="1410132620.0">2014-09-07&nbsp;20:30:20</td></tr>
+<tr><td class="name file pdf"><a href="huffman.pdf">Huffman</a></td><td class="size" sort="108187">105.7 KB</td><td class="date" sort="1410132616.0">2014-09-07&nbsp;20:30:16</td></tr>
+<tr><td class="name file pdf"><a href="Projeto.pdf">Projeto </a></td><td class="size" sort="33543">32.8 KB</td><td class="date" sort="1410132616.0">2014-09-07&nbsp;20:30:16</td></tr>
+<tr><td class="name file pdf"><a href="Trab1_B2.pdf">Trabalho para B2</a></td><td class="size" sort="15501">15.1 KB</td><td class="date" sort="1410132616.0">2014-09-07&nbsp;20:30:16</td></tr>
+<!--<tr><td class="name file pdf"><a href="Pratica_Grafos_Gab.pdf">Pratica_Grafos_Gab.pdf</a></td><td class="size" sort="363578">355.1 KB</td><td class="date" sort="1410132618.0">2014-09-07&nbsp;20:30:18</td></tr>
+<tr><td class="name file document"><a href="Exercicios_Floyd_Prim_Kruskal.doc">Exercicios_Floyd_Prim_Kruskal.doc</a></td><td class="size" sort="218624">213.5 KB</td><td class="date" sort="1410132620.0">2014-09-07&nbsp;20:30:20</td></tr>
+
+-->
+    </tbody>
+</table>
+<div id="dropbox-index-footer">Generated on <strong>2014-09-07&nbsp;21:49:49</strong> using <a href="http://code.google.com/p/kosciak-misc/wiki/DropboxIndex">Dropbox-index</a>-0.4.3</a></div>
+<div id="dropbox-index-dir-info">
+
+</div>
+</body>
+</html>

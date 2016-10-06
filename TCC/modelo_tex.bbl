@@ -1,0 +1,27 @@
+\providecommand{\abntreprintinfo}[1]{%
+ \citeonline{#1}}
+\setlength{\labelsep}{0pt}\begin{thebibliography}{}
+\providecommand{\abntrefinfo}[3]{}
+\providecommand{\abntbstabout}[1]{}
+\abntbstabout{v-1.9.5 }
+
+\bibitem[Chinwalla et al. 2002]{chinwalla2002initial}
+\abntrefinfo{Chinwalla et al.}{CHINWALLA et al.}{2002}
+{CHINWALLA, A.~T. et al. Initial sequencing and comparative analysis of the
+  mouse genome.
+\emph{Nature}, v.~420, n.~6915, p. 520--562, 2002.}
+
+\bibitem[Sammon 1969]{sammon1969nonlinear}
+\abntrefinfo{Sammon}{SAMMON}{1969}
+{SAMMON, J.~W. A nonlinear mapping for data structure analysis.
+\emph{IEEE Transactions on computers}, n.~5, p. 401--409, 1969.
+Dispon{\'\i}vel em:
+  \url{https://www.computer.org/csdl/trans/tc/1969/05/01671271.pdf}.}
+
+\bibitem[Wessberg et al. 2000]{wessberg2000real}
+\abntrefinfo{Wessberg et al.}{WESSBERG et al.}{2000}
+{WESSBERG, J. et al. Real-time prediction of hand trajectory by ensembles of
+  cortical neurons in primates.
+\emph{Nature}, v.~408, n.~6810, p. 361--365, 2000.}
+
+\end{thebibliography}
